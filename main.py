@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from database import engine, init_db, get_session
 from models import Todo
 from sqlmodel import Session
+import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -25,10 +26,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
-@app.on_event("startup")
-def on_startup():
-    init_db()
 
 @app.post("/todos/", response_model=Todo)
 def create_todo(todo: Todo, session: Session = Depends(get_session)):
@@ -69,3 +66,6 @@ def delete_todo(todo_id: int, session: Session = Depends(get_session)):
     session.delete(db)
     session.commit()
     return None
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
