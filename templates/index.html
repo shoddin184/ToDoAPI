@@ -1,25 +1,28 @@
 <!doctype html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Todo</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="シンプルで使いやすいToDoリストアプリケーション">
+  <title>ToDoリスト</title>
   <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
   <h1>ToDoリスト</h1>
+
   <header>
-    <input id="title" type="text" placeholder="新しいToDo">
-    <button id="add">追加</button>
+    <input id="title" type="text" placeholder="新しいToDo" aria-label="新しいToDoを入力">
+    <button id="add" aria-label="ToDoを追加">追加</button>
   </header>
-  <ul id="list"></ul>
+
+  <ul id="list" aria-label="アクティブなToDoリスト"></ul>
 
   <div class="completed-section">
-    <div class="completed-header" id="completedHeader">
+    <div class="completed-header" id="completedHeader" role="button" tabindex="0" aria-expanded="false">
       <span>完了 (<span id="completedCount">0</span>件)</span>
-      <span class="toggle-icon" id="toggleIcon">▼</span>
+      <span class="toggle-icon" id="toggleIcon" aria-hidden="true">▼</span>
     </div>
-    <ul id="completedList" class="completed-list"></ul>
+    <ul id="completedList" class="completed-list" aria-label="完了したToDoリスト"></ul>
   </div>
 
   <script src="../static/app.js"></script>
