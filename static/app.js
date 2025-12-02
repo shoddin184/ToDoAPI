@@ -1,16 +1,26 @@
+console.log('app.js が読み込まれました');
+
+let currentListId = 1;
+
 const api = {
-  list:   () => fetch('/todos/').then(r => r.json()),
-  create: (title) => fetch('/todos/', {
+  list:   (listId) => fetch(`/todos/?list_id=${listId}`).then(r => r.json()),
+  create: (title, listId) => fetch('/todos/', {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({ title, done: false })
+              body: JSON.stringify({ title, done: false, list_id: listId })
            }).then(r => r.json()),
   update: (t) => fetch(`/todos/${t.id}`, {
               method: 'PUT',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(t)
            }).then(r => r.json()),
-  del:    (id) => fetch(`/todos/${id}`, { method: 'DELETE' })
+  del:    (id) => fetch(`/todos/${id}`, { method: 'DELETE' }),
+  getLists: () => fetch('/lists/').then(r => r.json()),
+  createList: (name) => fetch('/lists/', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ name })
+           }).then(r => r.json())
 };
 
 const $list = document.getElementById('list');
@@ -71,13 +81,13 @@ const render = (items = []) => {
   $completedCount.textContent = completedTodos.length;
 };
 
-async function load() { render(await api.list()); }
+async function load() { render(await api.list(currentListId)); }
 
 const addTodo = async () => {
   const input = document.getElementById('title');
   const title = input.value.trim();
   if (!title) return;
-  await api.create(title);
+  await api.create(title, currentListId);
   input.value = '';
   load();
 };
@@ -100,4 +110,95 @@ $completedHeader.addEventListener('click', () => {
   $toggleIcon.classList.toggle('expanded');
 });
 
+// リスト切り替え機能
+const $listSelectorLeft = document.getElementById('listSelectorLeft');
+const $listDropdown = document.getElementById('listDropdown');
+const $currentListName = document.getElementById('currentListName');
+const $listOptions = document.getElementById('listOptions');
+const $addListBtn = document.getElementById('addListBtn');
+const $listAddModal = document.getElementById('listAddModal');
+const $newListName = document.getElementById('newListName');
+const $confirmAddList = document.getElementById('confirmAddList');
+const $cancelAddList = document.getElementById('cancelAddList');
+
+console.log('Elements:', {
+  $addListBtn,
+  $listAddModal,
+  $newListName,
+  $confirmAddList,
+  $cancelAddList
+});
+
+const loadLists = async () => {
+  const lists = await api.getLists();
+  $listOptions.innerHTML = '';
+  lists.forEach(list => {
+    const li = document.createElement('li');
+    li.textContent = list.name;
+    li.dataset.listId = list.id;
+    if (list.id === currentListId) {
+      li.classList.add('active');
+    }
+    li.onclick = () => {
+      currentListId = list.id;
+      $currentListName.textContent = list.name;
+      $listDropdown.classList.remove('expanded');
+      load();
+      loadLists();
+    };
+    $listOptions.append(li);
+  });
+};
+
+$listSelectorLeft.addEventListener('click', () => {
+  $listDropdown.classList.toggle('expanded');
+});
+
+if ($addListBtn) {
+  console.log('+ボタンのイベントリスナーを登録します');
+  $addListBtn.addEventListener('click', (e) => {
+    console.log('+ボタンがクリックされました');
+    e.stopPropagation();
+    $listAddModal.classList.add('active');
+    console.log('モーダルにactiveクラスを追加しました');
+    $newListName.focus();
+  });
+} else {
+  console.error('+ボタンが見つかりませんでした');
+}
+
+$cancelAddList.addEventListener('click', () => {
+  $listAddModal.classList.remove('active');
+  $newListName.value = '';
+});
+
+$confirmAddList.addEventListener('click', async () => {
+  const name = $newListName.value.trim();
+  if (!name) return;
+  const newList = await api.createList(name);
+  $newListName.value = '';
+  $listAddModal.classList.remove('active');
+  currentListId = newList.id;
+  $currentListName.textContent = newList.name;
+  loadLists();
+  load();
+});
+
+$newListName.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    $confirmAddList.click();
+  }
+  if (e.key === 'Escape') {
+    $cancelAddList.click();
+  }
+});
+
+$listAddModal.addEventListener('click', (e) => {
+  if (e.target === $listAddModal) {
+    $cancelAddList.click();
+  }
+});
+
+loadLists();
 load();

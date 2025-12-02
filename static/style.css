@@ -32,10 +32,206 @@ body > * {
     max-width: var(--max-width);
 }
 
+h1 {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+h1:hover {
+    color: #4a9eff;
+    text-decoration: underline;
+}
+
+/* ========== List Selector ========== */
+.list-selector {
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+}
+
 /* ========== Header ========== */
 header {
     display: flex;
     gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.list-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem 1rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.list-selector-header:hover {
+    background-color: var(--bg-secondary);
+}
+
+.list-selector-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    cursor: pointer;
+    flex: 1;
+}
+
+
+.list-selector-left span:first-child {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.add-list-btn {
+    font-size: 1.2rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-list-btn:hover {
+    background-color: #4a9eff;
+    color: white;
+    transform: scale(1.1);
+}
+
+.list-selector-dropdown {
+    position: absolute;
+    width: 100%;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-sm);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    z-index: 10;
+}
+
+.list-selector-dropdown.expanded {
+    max-height: 400px;
+    opacity: 1;
+}
+
+.list-selector-dropdown ul {
+    list-style: none;
+    padding: var(--spacing-md);
+    margin: 0;
+}
+
+.list-selector-dropdown li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    position: relative;
+}
+
+.list-selector-dropdown li:hover {
+    background-color: var(--bg-hover);
+    transform: translateX(5px);
+}
+
+.list-selector-dropdown li.active {
+    background-color: var(--bg-hover);
+    color: #4a9eff;
+    border-left: 3px solid #4a9eff;
+    padding-left: calc(1rem - 3px);
+}
+
+.list-selector-dropdown li.active::before {
+    content: '✓ ';
+    margin-right: 0.5rem;
+}
+
+.list-add-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.list-add-modal.active {
+    display: flex;
+}
+
+.list-add-modal-content {
+    background-color: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border: 2px solid #4a9eff;
+    min-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.list-add-modal-content h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+    font-size: 1.3rem;
+}
+
+.list-add-modal-content input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-lg);
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.list-add-modal-content input:focus {
+    border-color: #4a9eff;
+    outline: none;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+}
+
+.modal-buttons button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+}
+
+.modal-buttons button:first-child {
+    background-color: var(--bg-primary);
+}
+
+.modal-buttons button:last-child {
+    background-color: #4a9eff;
+    color: white;
+    border-color: #4a9eff;
+}
+
+.modal-buttons button:last-child:hover {
+    background-color: #3a8eef;
 }
 
 /* ========== Form Elements ========== */
@@ -115,6 +311,13 @@ li {
 
 li span {
     flex: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+li span:hover {
+    color: #4a9eff;
+    text-decoration: underline;
 }
 
 /* ========== Todo States ========== */
