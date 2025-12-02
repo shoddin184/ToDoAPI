@@ -5,10 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="シンプルで使いやすいToDoリストアプリケーション">
   <title>ToDoリスト</title>
-  <link rel="stylesheet" href="../static/style.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <h1>ToDoリスト</h1>
+
+  <div class="list-selector">
+    <div class="list-selector-header" id="listSelectorHeader">
+      <div class="list-selector-left" id="listSelectorLeft">
+        <span id="currentListName">タスク</span>
+      </div>
+      <button id="addListBtn" class="add-list-btn" title="新しいリストを追加">+</button>
+    </div>
+    <div class="list-selector-dropdown" id="listDropdown">
+      <ul id="listOptions"></ul>
+    </div>
+    <div class="list-add-modal" id="listAddModal">
+      <div class="list-add-modal-content">
+        <h3>新しいリスト</h3>
+        <input id="newListName" type="text" placeholder="リスト名を入力">
+        <div class="modal-buttons">
+          <button id="cancelAddList">キャンセル</button>
+          <button id="confirmAddList">作成</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <header>
     <input id="title" type="text" placeholder="新しいToDo" aria-label="新しいToDoを入力">
@@ -25,6 +47,6 @@
     <ul id="completedList" class="completed-list" aria-label="完了したToDoリスト"></ul>
   </div>
 
-  <script src="../static/app.js"></script>
+  <script src="/static/app.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from database import engine, init_db, get_session
-from models import Todo
+from models import Todo, TodoList
 from sqlmodel import Session
 import uvicorn
 
@@ -35,8 +35,8 @@ def create_todo(todo: Todo, session: Session = Depends(get_session)):
     return todo
 
 @app.get("/todos/", response_model=List[Todo])
-def read_todos(session: Session = Depends(get_session)):
-    todos = session.exec(select(Todo).order_by(Todo.id.desc())).all()
+def read_todos(list_id: int = 1, session: Session = Depends(get_session)):
+    todos = session.exec(select(Todo).where(Todo.list_id == list_id).order_by(Todo.id.desc())).all()
     return todos
 
 @app.get("/todos/{todo_id}", response_model=Todo)
@@ -66,6 +66,18 @@ def delete_todo(todo_id: int, session: Session = Depends(get_session)):
     session.delete(db)
     session.commit()
     return None
+
+@app.get("/lists/", response_model=List[TodoList])
+def read_lists(session: Session = Depends(get_session)):
+    lists = session.exec(select(TodoList).order_by(TodoList.id)).all()
+    return lists
+
+@app.post("/lists/", response_model=TodoList)
+def create_list(todo_list: TodoList, session: Session = Depends(get_session)):
+    session.add(todo_list)
+    session.commit()
+    session.refresh(todo_list)
+    return todo_list
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
